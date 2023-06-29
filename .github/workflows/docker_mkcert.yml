@@ -5,6 +5,12 @@ on:
       version:
         required: true
         type: string
+env:
+  docker_registry: registry.hub.docker.com
+  docker_organization: vleedev
+  docker_repository: filosottile_mkcert
+  docker_login: vleedev
+  docker_tag: "${{ inputs.version }}"
 
 jobs:
   deploy:
@@ -13,6 +19,34 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo ${{ inputs.version }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: "${{ env.docker_login }}"
+          password: "${{ secrets.DOCKER_HUB_TOKEN }}"
+      # Check image existent
+      - name: Check image
+        id: image_exists
+        uses: cloudposse/github-action-docker-image-exists@main
+        with:
+          registry: "${{ env.docker_registry }}"
+          organization: "${{ env.docker_organization }}"
+          repository: "${{ env.docker_repository }}"
+          login: "${{ env.docker_login }}"
+          password: "${{ secrets.DOCKER_HUB_TOKEN }}"
+          tag: "${{ env.docker_tag }}"
+      - name: Debug output
+        run: echo "${{ steps.image_exists.conclusion }}"
+      # - name: Build and Push
+      #   id: build_push
+      #   uses: cloudposse/github-action-docker-build-push@main
+      #   with:
+      #     registry: registry.hub.docker.com
+      #     organization: vleedev
+      #     repository: filosottile_mkcert
+      #     login: vleedev
+      #     password: "${{ secrets.DOCKER_HUB_TOKEN }}"
+      #     platforms: linux/amd64,linux/arm64
+
+
