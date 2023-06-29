@@ -1,0 +1,33 @@
+name: Monitor FiloSottile/mkcert and Trigger Workflow on New Release
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # Run every day at midnight UTC
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Latest Release
+        id: release
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const repo = 'FiloSottile/mkcert';
+            const response = await github.repos.getLatestRelease({
+              owner: repo.split('/')[0],
+              repo: repo.split('/')[1]
+            });
+            const latestRelease = response.data;
+            const previousRelease = ${{ github.event.before || 'none' }};
+            console.log('Latest Release:', latestRelease.tag_name);
+            console.log('Previous Release:', previousRelease);
+
+            // Compare the latest release with the previous release
+            if (latestRelease.tag_name !== previousRelease) {
+              console.log('New release detected! Triggering workflow...');
+              // Trigger your workflow here
+            } else {
+              console.log('No new release found.');
+            }
