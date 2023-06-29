@@ -27,7 +27,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'main',
-              workflow_id: 'docker_mkcert.yml',
+              workflow_id: 'docker_mkcert',
               inputs: {
                 version: latestRelease.tag_name,
               }
