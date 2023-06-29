@@ -35,11 +35,14 @@ jobs:
           docker_image="${{ env.docker_organization }}/${{ env.docker_repository }}"
           docker_image_with_version_tag="${docker_image}:${{ env.docker_tag }}"
           docker_image_with_latest_tag="${docker_image}:latest"
-          # Build image
-          docker build -t "${docker_image_with_version_tag}" --target=app --build-arg MKCERT_VERSION="${{ inputs.version }}" .
-          # Tag latest
-          docker tag "${docker_image_with_version_tag}" "${docker_image_with_latest_tag}"
-          # Push image with the specific version tag
-          docker push "${docker_image_with_version_tag}"
-          # Push image with the latest tag
-          docker push "${docker_image_with_latest_tag}"
+          docker_image_os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+          for arch in {"amd64","arm64"}; do
+            # Build image
+            docker build -t "${docker_image_with_version_tag}" --target=app --build-arg MKCERT_VERSION="${{ inputs.version }}" --build-arg OS="${docker_image_os}" --build-arg ARCH="${arch}" .
+            # Tag latest
+            docker tag "${docker_image_with_version_tag}" "${docker_image_with_latest_tag}"
+            # Push image with the specific version tag
+            docker push "${docker_image_with_version_tag}"
+            # Push image with the latest tag
+            docker push "${docker_image_with_latest_tag}"
+          done
