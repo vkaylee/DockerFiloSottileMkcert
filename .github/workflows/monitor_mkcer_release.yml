@@ -14,10 +14,12 @@ jobs:
         id: release
         uses: actions/github-script@v6
         with:
+          retries: 3
           script: |
             const response = await github.rest.repos.getLatestRelease({
               owner: 'FiloSottile',
               repo: 'mkcert'
             });
-
-            console.log(response);
+            const latestRelease = response.data;
+            console.log('Latest Release:', latestRelease.tag_name);
+            // TODO: trigger workflow here
