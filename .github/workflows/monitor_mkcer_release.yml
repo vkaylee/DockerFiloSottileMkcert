@@ -19,15 +19,5 @@ jobs:
               owner: 'FiloSottile',
               repo: 'mkcert'
             });
-            const latestRelease = response.data;
-            const previousRelease = ${ github.event.before } || 'none';
-            console.log('Latest Release:', latestRelease.tag_name);
-            console.log('Previous Release:', previousRelease);
 
-            // Compare the latest release with the previous release
-            if (latestRelease.tag_name !== previousRelease) {
-              console.log('New release detected! Triggering workflow...');
-              // Trigger your workflow here
-            } else {
-              console.log('No new release found.');
-            }
+            console.log(response);
