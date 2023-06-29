@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check Latest Release
         id: release
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             const repo = 'FiloSottile/mkcert';
