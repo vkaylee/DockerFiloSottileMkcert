@@ -27,9 +27,20 @@ jobs:
           password: "${{ secrets.DOCKER_HUB_TOKEN }}"
       - 
         name: Docker Build and Push
-        run:
-          if ! docker pull "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}" > /dev/null 2>&1; then
-            if docker build -t "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}" . ; then
-              docker push "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
-            fi
+        run: |
+          docker_image="${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
+          # Check image exists
+          docker_image_exist=0
+          if ! docker pull "${docker_image}" > /dev/null 2>&1; then
+              docker_image_exist=1
           fi
+
+          if [[ ${docker_image_exist} -eq 0 ]]; then
+              echo "Image exists ${docker_image}"
+              exit 1
+          fi
+
+          # Build image
+          docker build -t "${docker_image}" --target=app .
+          # Push image
+          docker push "${docker_image}"
