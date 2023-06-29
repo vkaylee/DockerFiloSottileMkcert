@@ -23,7 +23,7 @@ jobs:
             const latestRelease = response.data;
             console.log('Latest Release:', latestRelease.tag_name);
             // Trigger workflow here
-            await github.rest.rest.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'main',
