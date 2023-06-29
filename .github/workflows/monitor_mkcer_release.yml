@@ -11,9 +11,10 @@ jobs:
 
     steps:
       - name: Check Latest Release
-        id: release
+        id: check_release
         uses: actions/github-script@v6
         with:
+          result-encoding: string
           retries: 3
           script: |
             const response = await github.rest.repos.getLatestRelease({
@@ -22,13 +23,24 @@ jobs:
             });
             const latestRelease = response.data;
             console.log('Latest Release:', latestRelease.tag_name);
-            // Trigger workflow here
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'main',
-              workflow_id: 'docker_mkcert',
-              inputs: {
-                version: latestRelease.tag_name,
-              }
-            });
+            // return to set 'result' key in outputs
+            // Take by: steps.check_release.outputs.result
+            return latestRelease.tag_name
+      - name: Trigger workflow
+        id: trigger_workflow
+        if: "${{ steps.check_release.outputs.result }}"
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          retries: 3
+          script: |
+              // Trigger workflow here
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'main',
+                workflow_id: 'docker_mkcert.yml',
+                inputs: {
+                  version: ${{ steps.check_release.outputs.result }},
+                }
+              });
