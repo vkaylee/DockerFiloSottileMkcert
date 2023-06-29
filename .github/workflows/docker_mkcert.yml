@@ -13,7 +13,10 @@ env:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.runs-on }}
     if: ${{ inputs.version }}
     steps:
       - name: Checkout repository
