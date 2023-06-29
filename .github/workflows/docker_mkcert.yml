@@ -6,7 +6,6 @@ on:
         required: true
         type: string
 env:
-  docker_registry: registry.hub.docker.com
   docker_organization: vleedev
   docker_repository: filosottile_mkcert
   docker_login: vleedev
@@ -28,7 +27,7 @@ jobs:
       - 
         name: Docker Build and Push
         run: |
-          docker_image="${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
+          docker_image="${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
           # Check image exists
           docker_image_exist=0
           if ! docker pull "${docker_image}" > /dev/null 2>&1; then
