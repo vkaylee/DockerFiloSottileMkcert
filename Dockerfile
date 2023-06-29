@@ -1,6 +1,8 @@
 FROM debian AS build
+ARG MKCERT_VERSION
 WORKDIR /build
-RUN curl https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -o /build/mkcert
+RUN apt-get update && apt-get install -y curl
+RUN curl -L "https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64" -o /build/mkcert
 
 
 FROM scratch AS app

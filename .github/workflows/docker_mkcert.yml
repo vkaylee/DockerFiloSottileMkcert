@@ -41,6 +41,6 @@ jobs:
           fi
 
           # Build image
-          docker build -t "${docker_image}" --target=app .
+          docker build -t "${docker_image}" --target=app --build-arg MKCERT_VERSION="${{ inputs.version }}" .
           # Push image
           docker push "${docker_image}"
