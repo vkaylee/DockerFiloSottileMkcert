@@ -20,7 +20,7 @@ jobs:
               repo: 'mkcert'
             });
             const latestRelease = response.data;
-            const previousRelease = ${{ github.event.before || 'none' }};
+            const previousRelease = ${ github.event.before } || 'none';
             console.log('Latest Release:', latestRelease.tag_name);
             console.log('Previous Release:', previousRelease);
 
