@@ -31,7 +31,7 @@ jobs:
         if: "${{ steps.check_release.outputs.result }}"
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.REPO_TOKEN }}
           retries: 3
           script: |
               // Trigger workflow here
