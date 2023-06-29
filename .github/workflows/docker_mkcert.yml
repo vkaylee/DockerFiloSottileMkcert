@@ -14,8 +14,6 @@ env:
 jobs:
   deploy:
     strategy:
-      # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#handling-failures
-      fail-fast: false
       matrix:
         runs-on: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.runs-on }}
