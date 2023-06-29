@@ -1,0 +1,21 @@
+name: Update Docker Hub Overview
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - README.md
+      - .github/workflows/dockerhub-overview.yml
+jobs:
+  dockerHubOverview:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Docker Hub Overview
+      uses: peter-evans/dockerhub-description@v3
+      with:
+        username: "${{ secrets.DOCKER_HUB_USER }}"
+        password: "${{ secrets.DOCKER_HUB_TOKEN }}"
+        repository: "${{ github.repository }}"
+        enable-url-completion: true
