@@ -1,4 +1,5 @@
 FROM curlimages/curl AS build
+USER root
 ARG MKCERT_VERSION
 WORKDIR /build
 RUN curl -L "https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_VERSION}/mkcert-${MKCERT_VERSION}-linux-amd64" -o /build/mkcert
