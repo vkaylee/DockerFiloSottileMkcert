@@ -27,19 +27,14 @@ jobs:
       - 
         name: Docker Build and Push
         run: |
-          docker_image="${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
-          # Check image exists
-          docker_image_exist=0
-          if ! docker pull "${docker_image}" > /dev/null 2>&1; then
-              docker_image_exist=1
-          fi
-
-          if [[ ${docker_image_exist} -eq 0 ]]; then
-              echo "Image exists ${docker_image}"
-              exit 1
-          fi
-
+          docker_image="${{ env.docker_organization }}/${{ env.docker_repository }}"
+          docker_image_with_version_tag="${docker_image}:${{ env.docker_tag }}"
+          docker_image_with_latest_tag="${docker_image}:latest"
           # Build image
-          docker build -t "${docker_image}" --target=app --build-arg MKCERT_VERSION="${{ inputs.version }}" .
-          # Push image
-          docker push "${docker_image}"
+          docker build -t "${docker_image_with_version_tag}" --target=app --build-arg MKCERT_VERSION="${{ inputs.version }}" .
+          # Tag latest
+          docker tag "${docker_image_with_version_tag}" "${docker_image_with_latest_tag}"
+          # Push image with the specific version tag
+          docker push "${docker_image_with_version_tag}"
+          # Push image with the latest tag
+          docker push "${docker_image_with_latest_tag}"
