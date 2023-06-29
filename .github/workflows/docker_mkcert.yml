@@ -1,0 +1,18 @@
+name: Build mkcert docker
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo ${{ inputs.version }}

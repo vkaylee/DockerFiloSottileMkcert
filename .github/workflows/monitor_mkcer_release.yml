@@ -22,4 +22,13 @@ jobs:
             });
             const latestRelease = response.data;
             console.log('Latest Release:', latestRelease.tag_name);
-            // TODO: trigger workflow here
+            // Trigger workflow here
+            await github.rest.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'main',
+              workflow_id: 'docker_mkcert.yml',
+              inputs: {
+                version: latestRelease.tag_name,
+              }
+            });
