@@ -25,28 +25,11 @@ jobs:
         with:
           username: "${{ env.docker_login }}"
           password: "${{ secrets.DOCKER_HUB_TOKEN }}"
-      # Check image existent
-      - name: Check image
-        id: image_exists
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          registry: "${{ env.docker_registry }}"
-          organization: "${{ env.docker_organization }}"
-          repository: "${{ env.docker_repository }}"
-          login: "${{ env.docker_login }}"
-          password: "${{ secrets.DOCKER_HUB_TOKEN }}"
-          tag: "${{ env.docker_tag }}"
-      - name: Debug output
-        run: echo "${{ steps.image_exists.conclusion }}"
-      # - name: Build and Push
-      #   id: build_push
-      #   uses: cloudposse/github-action-docker-build-push@main
-      #   with:
-      #     registry: registry.hub.docker.com
-      #     organization: vleedev
-      #     repository: filosottile_mkcert
-      #     login: vleedev
-      #     password: "${{ secrets.DOCKER_HUB_TOKEN }}"
-      #     platforms: linux/amd64,linux/arm64
-
-
+      - 
+        name: Docker Build and Push
+        run:
+          if ! docker pull "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}" > /dev/null 2>&1; then
+            if docker build -t "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}" . ; then
+              docker push "${{ env.docker_registry }}/${{ env.docker_organization }}/${{ env.docker_repository }}:${{ env.docker_tag }}"
+            fi
+          fi
