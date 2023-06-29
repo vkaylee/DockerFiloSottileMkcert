@@ -15,10 +15,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const repo = 'FiloSottile/mkcert';
             const response = await github.rest.repos.getLatestRelease({
-              owner: repo.split('/')[0],
-              repo: repo.split('/')[1]
+              owner: 'FiloSottile',
+              repo: 'mkcert'
             });
             const latestRelease = response.data;
             const previousRelease = ${{ github.event.before || 'none' }};
